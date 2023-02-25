@@ -21,9 +21,16 @@ module.exports = {
             },
             {
                 test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/,
-            },
+                exclude: /node_modules|\.d\.ts$/,
+                use: {
+                    loader: 'ts-loader',
+                    options: {
+                        compilerOptions: {
+                            noEmit: false, // this option will solve the issue
+                        },
+                    }
+                }
+            }
         ]
     },
     resolve: {
