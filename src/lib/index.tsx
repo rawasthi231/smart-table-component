@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import {
-  FC,
   Fragment,
   LegacyRef,
   ReactNode,
@@ -163,14 +162,16 @@ function Table<T>({
             ) : null}
           </tbody>
         </table>
-        {recordsView === "infinite-Scroll" && !inverseScroll && items.length && (
-          <p
-            style={{ color: "black" }}
-            ref={setElement as unknown as LegacyRef<HTMLParagraphElement>}
-          >
-            Loading...
-          </p>
-        )}
+        {recordsView === "infinite-Scroll" &&
+          !inverseScroll &&
+          items.length && (
+            <p
+              style={{ color: "black" }}
+              ref={setElement as unknown as LegacyRef<HTMLParagraphElement>}
+            >
+              Loading...
+            </p>
+          )}
       </div>
       <div className="page-bar">
         {totalPages && currentPage ? (

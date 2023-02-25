@@ -1,14 +1,17 @@
 {
   "name": "react-smart-table-component",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --open --mode development --hot",
-    "build:prod": "webpack --mode production",
+    "dev": "concurrently \"npm run build:watch\" \"npm run demo:dev\"",
+    "demo:dev": "webpack-dev-server --open --mode development --hot",
+    "demo:prod": "webpack --mode production",
     "build": "babel src/lib -d dist --extensions .tsx",
-    "build:watch": "babel src/lib -w -d dist --extensions .tsx"
+    "build:watch": "babel src/lib -w -d dist --extensions .tsx",
+    "prepublish": "npm run build",
+    "predeploy": "npm run demo:prod",
+    "deploy": "gh-pages -d demo"
   },
   "author": "Raghvendra Awasthi <awasthiraghav59@gmail.com>",
   "license": "MIT",
@@ -16,8 +19,10 @@
     "table",
     "infinite scroll",
     "pagination",
-    "inverce",
-    "component"
+    "inverse infinite scroll",
+    "component",
+    "dynamic",
+    "smart"
   ],
   "peerDependencies": {
     "react": "16.2.0 - 18",
