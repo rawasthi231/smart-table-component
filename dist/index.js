@@ -19,7 +19,7 @@ function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefine
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
-function Table(_ref) {
+function ReactSmartTableComponent(_ref) {
   var _Array$fill;
   var currentPage = _ref.currentPage,
     customLoader = _ref.customLoader,
@@ -42,13 +42,13 @@ function Table(_ref) {
   });
 
   /** Configuration for Infinite Scroll Starts */
-  var _useState = (0, React.useState)(null),
-    _useState2 = _slicedToArray(_useState, 2),
-    element = _useState2[0],
-    setElement = _useState2[1];
-  var itemsRef = (0, React.useRef)(items);
-  var hasMoreRecordsRef = (0, React.useRef)(hasMoreRecords);
-  var scrollObserver = (0, React.useRef)(new IntersectionObserver(function (_ref2) {
+  var _React$useState = React.useState(null),
+    _React$useState2 = _slicedToArray(_React$useState, 2),
+    element = _React$useState2[0],
+    setElement = _React$useState2[1];
+  var itemsRef = React.useRef(items);
+  var hasMoreRecordsRef = React.useRef(hasMoreRecords);
+  var scrollObserver = React.useRef(new IntersectionObserver(function (_ref2) {
     var _ref3 = _slicedToArray(_ref2, 1),
       entry = _ref3[0];
     if (entry.isIntersecting && entry.intersectionRatio && hasMoreRecordsRef.current && loadMore) {
@@ -59,7 +59,7 @@ function Table(_ref) {
   }));
 
   // Observing the chat messages container movement
-  (0, React.useEffect)(function () {
+  React.useEffect(function () {
     var currentObserver = scrollObserver.current;
     if (element) {
       currentObserver.observe(element);
@@ -70,12 +70,12 @@ function Table(_ref) {
   }, [element]);
 
   // Updating the hasMoreRecordsRef when the hasMoreRecords flag changes
-  (0, React.useEffect)(function () {
+  React.useEffect(function () {
     hasMoreRecordsRef.current = hasMoreRecords;
   }, [hasMoreRecords]);
 
   // Updating the itemsRef when the items array changes
-  (0, React.useEffect)(function () {
+  React.useEffect(function () {
     if (items.length) {
       itemsRef.current = items;
     }
@@ -152,5 +152,5 @@ function Table(_ref) {
     }
   }, ">>")) : null));
 }
-var _default = Table;
+var _default = ReactSmartTableComponent;
 exports["default"] = _default;

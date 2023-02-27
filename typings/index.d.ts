@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-interface Heading<T> {
+export interface Heading<T> {
     align?: "left" | "center" | "right" | "justify" | "char";
     colSpan?: number;
     fieldName: Extract<keyof T, string> | `action_${number}`;
@@ -8,11 +8,11 @@ interface Heading<T> {
     title?: string;
 }
 
-type ScopedFields<T> = Partial<
+export type ScopedFields<T> = Partial<
     Record<Heading<T>["fieldName"], (item: T) => React.ReactNode>
 >;
 
-interface SmartTableProps<T> extends React.TableHTMLAttributes<HTMLTableElement> {
+export interface SmartTableProps<T> extends React.TableHTMLAttributes<HTMLTableElement> {
     currentPage?: number;
     customLoader?: React.ReactNode | string;
     hasMoreRecords?: boolean;
@@ -29,9 +29,6 @@ interface SmartTableProps<T> extends React.TableHTMLAttributes<HTMLTableElement>
     totalPages?: number;
 }
 
-declare interface SmartTableComponent<T> extends React.FC<SmartTableProps<T>> {
+export declare const ReactSmartTableComponent: React.FC<SmartTableProps<any>>;
 
-}
-
-export { SmartTableProps }
-export default SmartTableComponent;
+export default ReactSmartTableComponent;

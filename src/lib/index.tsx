@@ -1,45 +1,8 @@
 import * as React from "react";
 
-import {
-  Fragment,
-  LegacyRef,
-  ReactNode,
-  TableHTMLAttributes,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Heading, SmartTableProps } from "../../typings";
 
-interface Heading<T> {
-  align?: "left" | "center" | "right" | "justify" | "char";
-  colSpan?: number;
-  fieldName: Extract<keyof T, string> | `action_${number}`;
-  rowSpan?: number;
-  title?: string;
-}
-
-type ScopedFields<T> = Partial<
-  Record<Heading<T>["fieldName"], (item: T) => ReactNode>
->;
-
-interface Props<T> extends TableHTMLAttributes<HTMLTableElement> {
-  currentPage?: number;
-  customLoader?: ReactNode | string;
-  hasMoreRecords?: boolean;
-  headings: Heading<T>[];
-  items: Array<T>;
-  loading?: boolean;
-  recordsView?: "infinite-Scroll" | "pagination";
-  inverseScroll?: boolean;
-  loadMore?: () => void;
-  onPageChange?: (page: number) => void;
-  onRowClick?: (item: T) => void;
-  recordsPerPage?: number;
-  scopedFields?: ScopedFields<T>;
-  totalPages?: number;
-}
-
-function Table<T>({
+function ReactSmartTableComponent<T>({
   currentPage,
   customLoader,
   hasMoreRecords = false,
@@ -55,16 +18,16 @@ function Table<T>({
   scopedFields,
   totalPages,
   ...props
-}: Props<T>) {
+}: SmartTableProps<T>) {
   const fields = headings.map((item: Heading<T>) => item.fieldName);
 
   /** Configuration for Infinite Scroll Starts */
-  const [element, setElement] = useState(null);
+  const [element, setElement] = React.useState(null);
 
-  const itemsRef = useRef<Array<T>>(items);
-  const hasMoreRecordsRef = useRef<boolean>(hasMoreRecords);
+  const itemsRef = React.useRef<Array<T>>(items);
+  const hasMoreRecordsRef = React.useRef<boolean>(hasMoreRecords);
 
-  const scrollObserver = useRef<IntersectionObserver>(
+  const scrollObserver = React.useRef<IntersectionObserver>(
     new IntersectionObserver(
       ([entry]) => {
         if (
@@ -81,7 +44,7 @@ function Table<T>({
   );
 
   // Observing the chat messages container movement
-  useEffect(() => {
+  React.useEffect(() => {
     const currentObserver = scrollObserver.current;
 
     if (element) {
@@ -94,12 +57,12 @@ function Table<T>({
   }, [element]);
 
   // Updating the hasMoreRecordsRef when the hasMoreRecords flag changes
-  useEffect(() => {
+  React.useEffect(() => {
     hasMoreRecordsRef.current = hasMoreRecords;
   }, [hasMoreRecords]);
 
   // Updating the itemsRef when the items array changes
-  useEffect(() => {
+  React.useEffect(() => {
     if (items.length) {
       itemsRef.current = items;
     }
@@ -114,7 +77,7 @@ function Table<T>({
         {recordsView === "infinite-Scroll" && inverseScroll && items.length && (
           <p
             style={{ color: "black" }}
-            ref={setElement as unknown as LegacyRef<HTMLParagraphElement>}
+            ref={setElement as unknown as React.LegacyRef<HTMLParagraphElement>}
           >
             Loading...
           </p>
@@ -142,9 +105,9 @@ function Table<T>({
                 >
                   {fields.map((field: Heading<T>["fieldName"], fieldKey) =>
                     scopedFields && scopedFields[field] ? (
-                      <Fragment key={fieldKey}>
+                      <React.Fragment key={fieldKey}>
                         {scopedFields[field]?.(item)}
-                      </Fragment>
+                      </React.Fragment>
                     ) : (
                       <td key={fieldKey}>
                         {typeof item[field as keyof T] === "string"
@@ -167,7 +130,9 @@ function Table<T>({
           items.length && (
             <p
               style={{ color: "black" }}
-              ref={setElement as unknown as LegacyRef<HTMLParagraphElement>}
+              ref={
+                setElement as unknown as React.LegacyRef<HTMLParagraphElement>
+              }
             >
               Loading...
             </p>
@@ -178,7 +143,7 @@ function Table<T>({
           <>
             <span onClick={() => onPageChange && onPageChange(1)}>{"<<"}</span>
             {new Array(totalPages).fill(1)?.map((...[, i]) => (
-              <Fragment key={i}>
+              <React.Fragment key={i}>
                 {i === 0 ? (
                   <span
                     onClick={() =>
@@ -208,7 +173,7 @@ function Table<T>({
                     {">"}
                   </span>
                 ) : null}
-              </Fragment>
+              </React.Fragment>
             ))}
             <span onClick={() => onPageChange && onPageChange(totalPages)}>
               {">>"}
@@ -220,4 +185,4 @@ function Table<T>({
   );
 }
 
-export default Table;
+export default ReactSmartTableComponent;

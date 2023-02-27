@@ -1,8 +1,10 @@
 {
   "name": "react-smart-table-component",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "dist/index.js",
+  "module": "dist/index.js",
+  "files": [ "dist", "typings", "README.md" ],
   "scripts": {
     "dev": "concurrently \"npm run build:watch\" \"npm run demo:dev\"",
     "demo:dev": "webpack-dev-server --open --mode development --hot",
