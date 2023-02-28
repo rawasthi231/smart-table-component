@@ -3,6 +3,8 @@ import * as ReactDOM from "react-dom";
 
 import SmartTable from "../dist/index";
 
+import "./lib/style.css";
+
 export interface Address {
   street: string;
   suite: string;
@@ -57,6 +59,8 @@ function App() {
         address: (item: User) => <td>{`${item.address.street}`}</td>,
         company: (item: User) => <td>{`${item.company.name}`}</td>,
       }}
+      className="theme-table"
+      onRowClick={(item: User) => console.log(item)}
     />
   );
 }

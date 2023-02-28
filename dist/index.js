@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 var React = _interopRequireWildcard(require("react"));
+require("./style.css");
 var _excluded = ["currentPage", "customLoader", "hasMoreRecords", "headings", "inverseScroll", "items", "loading", "loadMore", "onPageChange", "onRowClick", "recordsView", "recordsPerPage", "scopedFields", "totalPages"],
   _excluded2 = ["title", "fieldName"];
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -82,8 +83,6 @@ function ReactSmartTableComponent(_ref) {
   }, [items, items.length]);
   /** Configuration for Infinite Scroll Ends */
 
-  /** Configuration for Infinite Scroll Ends */
-
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "scrollable-area"
   }, recordsView === "infinite-Scroll" && inverseScroll && items.length && /*#__PURE__*/React.createElement("p", {
@@ -111,7 +110,7 @@ function ReactSmartTableComponent(_ref) {
         key: fieldKey
       }, (_scopedFields$field = scopedFields[field]) === null || _scopedFields$field === void 0 ? void 0 : _scopedFields$field.call(scopedFields, item)) : /*#__PURE__*/React.createElement("td", {
         key: fieldKey
-      }, typeof item[field] === "string" ? item[field] : "");
+      }, "".concat(item[field]));
     }));
   }) : loading ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     colSpan: fields.length

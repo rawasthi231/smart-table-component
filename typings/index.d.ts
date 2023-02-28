@@ -29,6 +29,10 @@ export interface SmartTableProps<T> extends React.TableHTMLAttributes<HTMLTableE
     totalPages?: number;
 }
 
+type ReactSmartTableComponentType = <T>(props: SmartTableProps<T>) => React.ReactElement;
+
+export declare const ReactSmartTable: ReactSmartTableComponentType;
+
 export declare const ReactSmartTableComponent: React.FC<SmartTableProps<any>>;
 
 export default ReactSmartTableComponent;

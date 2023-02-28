@@ -1,0 +1,31 @@
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.scrollable-area {
+  height: 350px;
+  overflow: auto;
+  padding: 0 10px;
+  overflow-x: hidden;
+  background-color: #fff;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.scrollable-area::-webkit-scrollbar {
+  width: 13px;
+  height: 8px;
+}
+.scrollable-area::-webkit-scrollbar-track {
+  background: rgba(#121212, 0.3);
+  border-radius: 3px;
+}
+.scrollable-area::-webkit-scrollbar-thumb {
+  background: #121212;
+  border-radius: 3px;
+}
+
+.page-bar span {
+  cursor: pointer;
+  padding: 5px;
+}

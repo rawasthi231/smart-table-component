@@ -2,6 +2,8 @@ import * as React from "react";
 
 import { Heading, SmartTableProps } from "../../typings";
 
+import "./style.css";
+
 function ReactSmartTableComponent<T>({
   currentPage,
   customLoader,
@@ -69,8 +71,6 @@ function ReactSmartTableComponent<T>({
   }, [items, items.length]);
   /** Configuration for Infinite Scroll Ends */
 
-  /** Configuration for Infinite Scroll Ends */
-
   return (
     <>
       <div className="scrollable-area">
@@ -110,9 +110,7 @@ function ReactSmartTableComponent<T>({
                       </React.Fragment>
                     ) : (
                       <td key={fieldKey}>
-                        {typeof item[field as keyof T] === "string"
-                          ? (item[field as keyof T] as unknown as string)
-                          : ""}
+                        {`${item[field as keyof T]}`}
                       </td>
                     )
                   )}

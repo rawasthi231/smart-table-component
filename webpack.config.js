@@ -15,6 +15,11 @@ module.exports = {
                 loader: 'babel-loader'
             },
             {
+                test: /\.css?$/,
+                exclude: /node_modules/,
+                use: ['style-loader', 'css-loader']
+            },
+            {
                 test: /\.tsx?$/,
                 exclude: /node_modules|\.d\.ts$/,
                 use: {
@@ -29,7 +34,7 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
+        extensions: ['.tsx', '.ts', '.js', '.css'],
     },
     plugins: [
         new HtmlWebpackPlugin({

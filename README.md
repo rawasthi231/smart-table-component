@@ -72,7 +72,7 @@ export default function Users() {
   const [hasMore, setHasMore] = useState(false);
 
   const loadMore = () => {
-    setUsers([...moreData]);
+    setUsers([...users, ...moreData]);
     setHasMore(true);
   };
 
