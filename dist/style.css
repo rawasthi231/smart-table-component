@@ -25,7 +25,24 @@
   border-radius: 3px;
 }
 
+.page-bar {
+  text-align: center;
+  color: #000;
+}
+
 .page-bar span {
   cursor: pointer;
-  padding: 5px;
+  padding: 7px;
+  margin: 2px;
+  background-color: #fff;
+}
+
+.page-bar span:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.page-bar span .actve-page {
+  background-color: #000;
+  color: #fff;
 }

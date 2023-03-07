@@ -118,7 +118,7 @@ function ReactSmartTableComponent<T>({
               ))
             ) : loading ? (
               <tr>
-                <td colSpan={fields.length}>{customLoader ?? "Loading"}</td>
+                <td colSpan={fields.length}>{customLoader ?? "Loading..." }</td>
               </tr>
             ) : null}
           </tbody>
@@ -155,7 +155,7 @@ function ReactSmartTableComponent<T>({
                   </span>
                 ) : null}
 
-                <span onClick={() => onPageChange && onPageChange(i + 1)}>
+                <span className={(currentPage === (i + 1)) ? "actve-page" : ""} onClick={() => onPageChange && onPageChange(i + 1)}>
                   {i + 1}
                 </span>
 
@@ -182,5 +182,7 @@ function ReactSmartTableComponent<T>({
     </>
   );
 }
+
+export const ReactSmartTable = ReactSmartTableComponent;
 
 export default ReactSmartTableComponent;
