@@ -1,7 +1,7 @@
 {
   "name": "react-smart-table-component",
-  "version": "1.0.5",
-  "description": "",
+  "version": "1.0.7",
+  "description": "A smart and fully dynamic React Component purely build with TypeScript which has inbuilt functionality of infinite scroll and pagination.",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "files": [
@@ -21,6 +21,13 @@
   },
   "author": "Raghvendra Awasthi <awasthiraghav59@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rawasthi231/smart-table-component.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rawasthi231/smart-table-component.git/issues"
+  },
   "keywords": [
     "table",
     "infinite scroll",
@@ -45,10 +52,11 @@
     "@types/react-dom": "^18.0.11",
     "babel-loader": "^9.1.2",
     "css-loader": "^6.7.3",
+    "gh-pages": "^5.0.0",
     "html-webpack-plugin": "^5.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "style-loader": "^3.3.1",
+    "style-loader": "^3.3.2",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.5",
     "webpack": "^5.75.0",

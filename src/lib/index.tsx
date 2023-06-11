@@ -26,6 +26,7 @@ function ReactSmartTableComponent<T>({
   /** Configuration for Infinite Scroll Starts */
   const [element, setElement] = React.useState(null);
 
+  const tableRowRef = React.useRef<HTMLTableRowElement>(null);
   const itemsRef = React.useRef<Array<T>>(items);
   const hasMoreRecordsRef = React.useRef<boolean>(hasMoreRecords);
 
@@ -41,7 +42,7 @@ function ReactSmartTableComponent<T>({
           loadMore();
         }
       },
-      { threshold: 1 }
+      { threshold: 0.7 }
     )
   );
 
@@ -68,20 +69,16 @@ function ReactSmartTableComponent<T>({
     if (items.length) {
       itemsRef.current = items;
     }
-  }, [items, items.length]);
+
+    if (inverseScroll) {
+      tableRowRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [items, items.length, inverseScroll]);
   /** Configuration for Infinite Scroll Ends */
 
   return (
     <>
       <div className="scrollable-area">
-        {recordsView === "infinite-Scroll" && inverseScroll && items.length && (
-          <p
-            style={{ color: "black" }}
-            ref={setElement as unknown as React.LegacyRef<HTMLParagraphElement>}
-          >
-            Loading...
-          </p>
-        )}
         <table {...props}>
           {headings && headings.length ? (
             <thead>
@@ -96,6 +93,22 @@ function ReactSmartTableComponent<T>({
           ) : null}
 
           <tbody>
+            {recordsView === "infinite-Scroll" &&
+              inverseScroll &&
+              items.length && (
+                <tr>
+                  <td colSpan={headings.length}>
+                    <p
+                      style={{ color: "black", textAlign: "center" }}
+                      ref={
+                        setElement as unknown as React.LegacyRef<HTMLParagraphElement>
+                      }
+                    >
+                      {customLoader ?? "Loading..."}
+                    </p>
+                  </td>
+                </tr>
+              )}
             {items && items.length ? (
               items.map((item, itemKey) => (
                 <tr
@@ -109,32 +122,34 @@ function ReactSmartTableComponent<T>({
                         {scopedFields[field]?.(item)}
                       </React.Fragment>
                     ) : (
-                      <td key={fieldKey}>
-                        {`${item[field as keyof T]}`}
-                      </td>
+                      <td key={fieldKey}>{`${item[field as keyof T]}`}</td>
                     )
                   )}
                 </tr>
               ))
             ) : loading ? (
               <tr>
-                <td colSpan={fields.length}>{customLoader ?? "Loading..." }</td>
+                <td colSpan={fields.length}>{customLoader ?? "Loading..."}</td>
               </tr>
             ) : null}
+            {recordsView === "infinite-Scroll" &&
+              !inverseScroll &&
+              items.length && (
+                <tr>
+                  <td colSpan={headings.length}>
+                    <p
+                      style={{ color: "black", textAlign: "center" }}
+                      ref={
+                        setElement as unknown as React.LegacyRef<HTMLParagraphElement>
+                      }
+                    >
+                      {customLoader ?? "Loading..."}
+                    </p>
+                  </td>
+                </tr>
+              )}
           </tbody>
         </table>
-        {recordsView === "infinite-Scroll" &&
-          !inverseScroll &&
-          items.length && (
-            <p
-              style={{ color: "black" }}
-              ref={
-                setElement as unknown as React.LegacyRef<HTMLParagraphElement>
-              }
-            >
-              Loading...
-            </p>
-          )}
       </div>
       <div className="page-bar">
         {totalPages && currentPage ? (
@@ -155,7 +170,10 @@ function ReactSmartTableComponent<T>({
                   </span>
                 ) : null}
 
-                <span className={(currentPage === (i + 1)) ? "actve-page" : ""} onClick={() => onPageChange && onPageChange(i + 1)}>
+                <span
+                  className={currentPage === i + 1 ? "actve-page" : ""}
+                  onClick={() => onPageChange && onPageChange(i + 1)}
+                >
                   {i + 1}
                 </span>
 
