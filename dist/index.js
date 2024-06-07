@@ -1,16 +1,20 @@
 "use strict";
 
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = exports.ReactSmartTable = void 0;
 var React = _interopRequireWildcard(require("react"));
-var _excluded = ["currentPage", "customLoader", "hasMoreRecords", "headings", "inverseScroll", "items", "loading", "loadMore", "onPageChange", "onRowClick", "parentClass", "recordsView", "recordsPerPage", "scopedFields", "totalPages"],
-  _excluded2 = ["title", "fieldName"];
+var _excluded = ["currentPage", "customLoader", "hasMoreRecords", "headings", "inverseScroll", "items", "loading", "loadMore", "onPageChange", "onRowClick", "parentClass", "recordsView", "recordsPerPage", "scopedFields", "search", "totalPages"],
+  _excluded2 = ["title", "fieldName", "sortable"];
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -37,6 +41,7 @@ function ReactSmartTableComponent(_ref) {
     recordsView = _ref.recordsView,
     recordsPerPage = _ref.recordsPerPage,
     scopedFields = _ref.scopedFields,
+    search = _ref.search,
     totalPages = _ref.totalPages,
     props = _objectWithoutProperties(_ref, _excluded);
   var fields = headings.map(function (item) {
@@ -91,16 +96,95 @@ function ReactSmartTableComponent(_ref) {
   }, [items, items.length, inverseScroll]);
   /** Configuration for Infinite Scroll Ends */
 
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+  /* Search functionality starts */
+  var _React$useState3 = React.useState(""),
+    _React$useState4 = _slicedToArray(_React$useState3, 2),
+    searchTerm = _React$useState4[0],
+    setSearchTerm = _React$useState4[1];
+  var deepSearch = function deepSearch(obj, searchTerm) {
+    if (_typeof(obj) === "object") {
+      for (var key in obj) {
+        if (deepSearch(obj[key], searchTerm)) return true;
+      }
+    } else if (typeof obj === "string" || typeof obj === "number") {
+      return String(obj).toLowerCase().includes(searchTerm.toLowerCase());
+    }
+    return false;
+  };
+  var filteredItems = React.useMemo(function () {
+    if (!searchTerm) return items;
+    return items.filter(function (item) {
+      return deepSearch(item, searchTerm);
+    });
+  }, [items, searchTerm]);
+
+  /* Search functionality ends */
+
+  /* Sorting functionality starts */
+
+  // Step 1: Add a new state variable for sort field and sort direction
+  var _React$useState5 = React.useState(null),
+    _React$useState6 = _slicedToArray(_React$useState5, 2),
+    sortField = _React$useState6[0],
+    setSortField = _React$useState6[1];
+  var _React$useState7 = React.useState("asc"),
+    _React$useState8 = _slicedToArray(_React$useState7, 2),
+    sortDirection = _React$useState8[0],
+    setSortDirection = _React$useState8[1];
+
+  // Step 2: Add an onClick handler for table headers
+  var handleSort = function handleSort(field) {
+    setSortField(field);
+    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+  };
+
+  // Step 3: Sort items before rendering
+  var sortedItems = React.useMemo(function () {
+    if (!sortField) return filteredItems;
+    return _toConsumableArray(filteredItems).sort(function (a, b) {
+      if (a[sortField] < b[sortField]) return sortDirection === "asc" ? -1 : 1;
+      if (a[sortField] > b[sortField]) return sortDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredItems, sortField, sortDirection]);
+
+  /* Sorting functionality ends */
+
+  return /*#__PURE__*/React.createElement(React.Fragment, null, search && /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    className: "search-box",
+    value: searchTerm,
+    onChange: function onChange(e) {
+      return setSearchTerm(e.target.value);
+    },
+    placeholder: "Search..."
+  }), /*#__PURE__*/React.createElement("div", {
     className: parentClass
-  }, /*#__PURE__*/React.createElement("table", props, headings && headings.length ? /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, headings.map(function (_ref4, i) {
+  }, /*#__PURE__*/React.createElement("table", _extends({}, props, {
+    role: "table"
+  }), headings && headings.length ? /*#__PURE__*/React.createElement("thead", {
+    role: "rowgroup"
+  }, /*#__PURE__*/React.createElement("tr", {
+    role: "row"
+  }, headings.map(function (_ref4, i) {
     var title = _ref4.title,
       fieldName = _ref4.fieldName,
+      sortable = _ref4.sortable,
       restAttr = _objectWithoutProperties(_ref4, _excluded2);
     return /*#__PURE__*/React.createElement("th", _extends({
+      role: "columnheader",
       key: i
-    }, restAttr), title !== null && title !== void 0 ? title : fieldName);
-  }))) : null, /*#__PURE__*/React.createElement("tbody", null, recordsView === "infinite-Scroll" && inverseScroll && items.length && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    }, restAttr, {
+      onClick: function onClick() {
+        return sortable && !fieldName.startsWith("action_1") && handleSort(fieldName);
+      }
+    }), title !== null && title !== void 0 ? title : fieldName, " ", sortable && sortField === fieldName && /*#__PURE__*/React.createElement("span", null, sortDirection === "asc" ? "▲" : "▼"));
+  }))) : null, /*#__PURE__*/React.createElement("tbody", {
+    role: "rowgroup"
+  }, recordsView === "infinite-Scroll" && inverseScroll && items.length && /*#__PURE__*/React.createElement("tr", {
+    role: "row"
+  }, /*#__PURE__*/React.createElement("td", {
+    role: "cell",
     colSpan: headings.length
   }, /*#__PURE__*/React.createElement("p", {
     style: {
@@ -108,7 +192,7 @@ function ReactSmartTableComponent(_ref) {
       textAlign: "center"
     },
     ref: setElement
-  }, customLoader !== null && customLoader !== void 0 ? customLoader : "Loading..."))), items && items.length ? items.map(function (item, itemKey) {
+  }, customLoader !== null && customLoader !== void 0 ? customLoader : "Loading..."))), sortedItems && sortedItems.length ? sortedItems.map(function (item, itemKey) {
     return /*#__PURE__*/React.createElement("tr", {
       key: itemKey,
       onClick: function onClick() {

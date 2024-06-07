@@ -2,22 +2,18 @@
 
 [![npm version](https://badge.fury.io/js/react-smart-table-component.svg)](https://badge.fury.io/js/react-smart-table-component) [![npm](https://img.shields.io/npm/dm/react-smart-table-component.svg?logo=npm)](https://www.npmjs.com/package/react-smart-table-component) [![npm](https://img.shields.io/bundlephobia/minzip/react-smart-table-component)](https://www.npmjs.com/package/react-smart-table-component)
 
-A smart and fully dynamic React Component purely build with TypeScript which has inbuilt functionality of infinite scroll and pagination.
+An intelligent, dynamic React component, built entirely with TypeScript. This component is equipped with built-in features such as infinite scrolling, pagination, search and now includes the newly added sorting functionality. It provides a seamless user experience for data-intensive applications, allowing for efficient navigation and organization of data.
 
-<!-- ![see here](https://github.com/ritikbanger/react18-input-otp/blob/main/src/demo/demo.gif)
-
-[Live Demo](https://github.com/rawasthi231/smart-table-component/media/demo) -->
 
 [CodeSandbox](https://codesandbox.io/s/zen-hofstadter-7m2rnl)
 
 ## Features
 
-- Support of React 18 and Typescript
-- Generic types for table info such as Headings and Body
-- No CSS included, Add your customized styles
-- Infinite scroll feature (Default scroll and UpSide Down Scroll)
-- Pagination feature
-- Scoped fields feature
+- Support of React 18, NextJS and Typescript
+- Use custom types for headings and body
+- Can use default CSS or add your customized styles
+- Option for both Pagination and Infinite scroll feature (Default scroll and Upside down scroll)
+- Scoped fields option to use custom JSX in any cell of the table
 
 ## Installation
 
@@ -36,7 +32,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 import ReactSmartTableComponent from "react-smart-table-component";
 
-import "./styles.css";
+import "react-smart-table-component/dist/styles.css";
 
 export default function App() {
   const [products, setProducts] = useState([]);
@@ -97,12 +93,12 @@ export default function App() {
       headings={[
         { fieldName: "thumbnail", title: "Thumbnail" },
         { fieldName: "title", title: "Title" },
-        { fieldName: "price", title: "Price" },
+        { fieldName: "price", title: "Price", sortable: true },
         { fieldName: "brand", title: "Brand" },
         { fieldName: "category", title: "Category" },
-        { fieldName: "rating", title: "Rating" },
+        { fieldName: "rating", title: "Rating", sortable: true },
         { fieldName: "description", title: "Description" },
-        { fieldName: "action_1", title: "Action" }
+        { fieldName: "action_1", title: "Action" },
       ]}
       loading={loading}
       recordsView="infinite-Scroll"
@@ -122,14 +118,21 @@ export default function App() {
         ),
         action_1: (item) => (
           <td>
-            <button onClick={() => alert(`Item Name: ${item.title}\nItem Price: ${item.price}\nItem Brand: ${item.brand}\nItem Description: ${item.description}`)}>View More</button>
+            <button
+              onClick={() =>
+                alert(
+                  `Item Name: ${item.title}\nItem Price: ${item.price}\nItem Brand: ${item.brand}\nItem Description: ${item.description}`
+                )
+              }
+            >
+              View More
+            </button>
           </td>
-        )
+        ),
       }}
     />
   );
 }
-
 ```
 
 #### Basic usage:
@@ -138,6 +141,7 @@ export default function App() {
 
 ```jsx
 import React, { Component } from "react";
+
 import SmartTable from "react-smart-table-component";
 
 export default class App extends Component {
@@ -309,5 +313,21 @@ export default function Users() {
     <td>false</td>
     <td>undefined</td>
     <td>It returns the clicked page number</td>
+  </tr>
+  </tr>
+   <tr>
+    <td>parentClass</td>
+    <td>string</td>
+    <td>false</td>
+    <td>"scrollable-area"</td>
+    <td>It's a default class with some basic styles required for infinite scroll feature</td>
+  </tr>
+  </tr>
+   <tr>
+    <td>search</td>
+    <td>boolean</td>
+    <td>false</td>
+    <td>undefined</td>
+    <td>To get a search box for searching functionality</td>
   </tr>
 </table>

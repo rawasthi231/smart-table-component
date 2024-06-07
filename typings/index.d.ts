@@ -6,6 +6,7 @@ export interface Heading<T> {
     fieldName: Extract<keyof T, string> | `action_${number}`;
     rowSpan?: number;
     title?: string;
+    sortable?: boolean;
 }
 
 export type ScopedFields<T> = Partial<
@@ -27,6 +28,7 @@ export interface SmartTableProps<T> extends React.TableHTMLAttributes<HTMLTableE
     parentClass?: string;
     recordsPerPage?: number;
     scopedFields?: ScopedFields<T>;
+    search?: boolean;
     totalPages?: number;
 }
 

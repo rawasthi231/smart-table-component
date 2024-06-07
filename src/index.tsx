@@ -49,8 +49,8 @@ function App() {
       items={users}
       headings={[
         { fieldName: "name", title: "Name" },
-        { fieldName: "email", title: "Email" },
-        { fieldName: "phone", title: "Phone" },
+        { fieldName: "email", title: "Email", sortable: true },
+        { fieldName: "phone", title: "Phone", sortable: true },
         { fieldName: "address", title: "Address" },
         { fieldName: "company", title: "Company" },
       ]}
@@ -61,6 +61,7 @@ function App() {
       }}
       className="theme-table"
       onRowClick={(item: User) => console.log(item)}
+      search
     />
   );
 }

@@ -17,6 +17,7 @@ function ReactSmartTableComponent<T>({
   recordsView,
   recordsPerPage,
   scopedFields,
+  search,
   totalPages,
   ...props
 }: SmartTableProps<T>) {
@@ -75,28 +76,105 @@ function ReactSmartTableComponent<T>({
   }, [items, items.length, inverseScroll]);
   /** Configuration for Infinite Scroll Ends */
 
+  /* Search functionality starts */
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+  const deepSearch = (obj: T, searchTerm: string) => {
+    if (typeof obj === "object") {
+      for (let key in obj) {
+        if (deepSearch(obj[key] as T, searchTerm)) return true;
+      }
+    } else if (typeof obj === "string" || typeof obj === "number") {
+      return String(obj).toLowerCase().includes(searchTerm.toLowerCase());
+    }
+    return false;
+  };
+
+  const filteredItems = React.useMemo(() => {
+    if (!searchTerm) return items;
+
+    return items.filter((item) => {
+      return deepSearch(item, searchTerm);
+    });
+  }, [items, searchTerm]);
+
+  /* Search functionality ends */
+
+  /* Sorting functionality starts */
+
+  // Step 1: Add a new state variable for sort field and sort direction
+  const [sortField, setSortField] = React.useState<Extract<
+    keyof T,
+    string
+  > | null>(null);
+  const [sortDirection, setSortDirection] = React.useState<"asc" | "desc">(
+    "asc"
+  );
+
+  // Step 2: Add an onClick handler for table headers
+  const handleSort = (field: Extract<keyof T, string>) => {
+    setSortField(field);
+    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+  };
+
+  // Step 3: Sort items before rendering
+  const sortedItems = React.useMemo(() => {
+    if (!sortField) return filteredItems;
+
+    return [...filteredItems].sort((a, b) => {
+      if (a[sortField] < b[sortField]) return sortDirection === "asc" ? -1 : 1;
+      if (a[sortField] > b[sortField]) return sortDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredItems, sortField, sortDirection]);
+
+  /* Sorting functionality ends */
+
   return (
     <>
+      {search && (
+        <input
+          type="text"
+          className="search-box"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search..."
+        />
+      )}
       <div className={parentClass}>
-        <table {...props}>
+        <table {...props} role="table">
           {headings && headings.length ? (
-            <thead>
-              <tr>
-                {headings.map(({ title, fieldName, ...restAttr }, i) => (
-                  <th key={i} {...restAttr}>
-                    {title ?? fieldName}
-                  </th>
-                ))}
+            <thead role="rowgroup">
+              <tr role="row">
+                {headings.map(
+                  ({ title, fieldName, sortable, ...restAttr }, i) => (
+                    <th
+                      role="columnheader"
+                      key={i}
+                      {...restAttr}
+                      onClick={() =>
+                        sortable &&
+                        !fieldName.startsWith("action_1") &&
+                        handleSort(fieldName as Extract<keyof T, string>)
+                      }
+                    >
+                      {title ?? fieldName}{" "}
+                      {sortable && sortField === fieldName && (
+                        <span>{sortDirection === "asc" ? "▲" : "▼"}</span>
+                      )}
+                    </th>
+                  )
+                )}
               </tr>
             </thead>
           ) : null}
 
-          <tbody>
+          <tbody role="rowgroup">
             {recordsView === "infinite-Scroll" &&
               inverseScroll &&
               items.length && (
-                <tr>
-                  <td colSpan={headings.length}>
+                <tr role="row">
+                  <td role="cell" colSpan={headings.length}>
                     <p
                       style={{ color: "black", textAlign: "center" }}
                       ref={
@@ -108,8 +186,8 @@ function ReactSmartTableComponent<T>({
                   </td>
                 </tr>
               )}
-            {items && items.length ? (
-              items.map((item, itemKey) => (
+            {sortedItems && sortedItems.length ? (
+              sortedItems.map((item, itemKey) => (
                 <tr
                   key={itemKey}
                   onClick={() => onRowClick && onRowClick(item)}
