@@ -24,6 +24,7 @@ export interface SmartTableProps<T> extends React.TableHTMLAttributes<HTMLTableE
     loadMore?: () => void;
     onPageChange?: (page: number) => void;
     onRowClick?: (item: T) => void;
+    parentClass?: string;
     recordsPerPage?: number;
     scopedFields?: ScopedFields<T>;
     totalPages?: number;

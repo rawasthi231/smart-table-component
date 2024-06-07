@@ -1,6 +1,6 @@
 {
   "name": "react-smart-table-component",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A smart and fully dynamic React Component purely build with TypeScript which has inbuilt functionality of infinite scroll and pagination.",
   "main": "dist/index.js",
   "module": "dist/index.js",

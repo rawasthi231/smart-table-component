@@ -2,8 +2,6 @@ import * as React from "react";
 
 import { Heading, SmartTableProps } from "../../typings";
 
-import "./style.css";
-
 function ReactSmartTableComponent<T>({
   currentPage,
   customLoader,
@@ -15,6 +13,7 @@ function ReactSmartTableComponent<T>({
   loadMore,
   onPageChange,
   onRowClick,
+  parentClass = "scrollable-area",
   recordsView,
   recordsPerPage,
   scopedFields,
@@ -78,7 +77,7 @@ function ReactSmartTableComponent<T>({
 
   return (
     <>
-      <div className="scrollable-area">
+      <div className={parentClass}>
         <table {...props}>
           {headings && headings.length ? (
             <thead>
