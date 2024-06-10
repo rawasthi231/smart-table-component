@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Heading, SmartTableProps } from "../../typings";
+import { Heading, ReactSmartTableComponentProps } from "../../typings";
 
 function ReactSmartTableComponent<T>({
   currentPage,
@@ -11,16 +11,23 @@ function ReactSmartTableComponent<T>({
   items,
   loading,
   loadMore,
+  noRecordsFound,
   onPageChange,
   onRowClick,
+  onSearch,
   parentClass = "scrollable-area",
   recordsView,
   recordsPerPage,
   scopedFields,
   search,
+  searchableFields,
+  searchBehavior,
+  searchBoxPlaceholder = "Search...",
+  searchType,
+  stopDefaultSearch,
   totalPages,
   ...props
-}: SmartTableProps<T>) {
+}: ReactSmartTableComponentProps<T>) {
   const fields = headings.map((item: Heading<T>) => item.fieldName);
 
   /** Configuration for Infinite Scroll Starts */
@@ -79,19 +86,46 @@ function ReactSmartTableComponent<T>({
   /* Search functionality starts */
   const [searchTerm, setSearchTerm] = React.useState("");
 
+  const fuzzySearch = (needle: string, haystack: string) => {
+    const hlen = haystack.length;
+    const nlen = needle.length;
+    if (nlen > hlen) {
+      return false;
+    }
+    if (nlen === hlen) {
+      return needle === haystack;
+    }
+    outer: for (let i = 0, j = 0; i < nlen; i++) {
+      const nch = needle.charCodeAt(i);
+      while (j < hlen) {
+        if (haystack.charCodeAt(j++) === nch) {
+          continue outer;
+        }
+      }
+      return false;
+    }
+    return true;
+  };
+
   const deepSearch = (obj: T, searchTerm: string) => {
     if (typeof obj === "object") {
       for (let key in obj) {
-        if (deepSearch(obj[key] as T, searchTerm)) return true;
+        if (
+          searchableFields?.includes(key) &&
+          deepSearch(obj[key] as T, searchTerm)
+        )
+          return true;
       }
     } else if (typeof obj === "string" || typeof obj === "number") {
+      if (searchType === "fuzzy")
+        return fuzzySearch(searchTerm.toLowerCase(), String(obj).toLowerCase());
       return String(obj).toLowerCase().includes(searchTerm.toLowerCase());
     }
     return false;
   };
 
   const filteredItems = React.useMemo(() => {
-    if (!searchTerm) return items;
+    if (!searchTerm || stopDefaultSearch) return items;
 
     return items.filter((item) => {
       return deepSearch(item, searchTerm);
@@ -137,8 +171,25 @@ function ReactSmartTableComponent<T>({
           type="text"
           className="search-box"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search..."
+          onChange={(e) => {
+            const text = e.target.value;
+            setSearchTerm(text);
+            if (searchBehavior === "debounce") {
+              setTimeout(() => {
+                if (onSearch) onSearch(text);
+              }, 500);
+            } else if (searchBehavior === "throttle") {
+              clearTimeout(
+                (window as any).searchThrottleTimeout as unknown as number
+              );
+              (window as any).searchThrottleTimeout = setTimeout(() => {
+                if (onSearch) onSearch(text);
+              }, 500);
+            } else {
+              if (onSearch) onSearch(text);
+            }
+          }}
+          placeholder={searchBoxPlaceholder}
         />
       )}
       <div className={parentClass}>
@@ -208,7 +259,21 @@ function ReactSmartTableComponent<T>({
               <tr>
                 <td colSpan={fields.length}>{customLoader ?? "Loading..."}</td>
               </tr>
-            ) : null}
+            ) : (
+              <tr>
+                {noRecordsFound ? (
+                  typeof noRecordsFound === "string" ? (
+                    <td colSpan={fields.length}>{noRecordsFound}</td>
+                  ) : (
+                    <td>{noRecordsFound}</td>
+                  )
+                ) : (
+                  <td colSpan={fields.length} style={{ textAlign: "center" }}>
+                    No record found
+                  </td>
+                )}
+              </tr>
+            )}
             {recordsView === "infinite-Scroll" &&
               !inverseScroll &&
               items.length && (

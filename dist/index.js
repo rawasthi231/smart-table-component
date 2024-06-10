@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = exports.ReactSmartTable = void 0;
 var React = _interopRequireWildcard(require("react"));
-var _excluded = ["currentPage", "customLoader", "hasMoreRecords", "headings", "inverseScroll", "items", "loading", "loadMore", "onPageChange", "onRowClick", "parentClass", "recordsView", "recordsPerPage", "scopedFields", "search", "totalPages"],
+var _excluded = ["currentPage", "customLoader", "hasMoreRecords", "headings", "inverseScroll", "items", "loading", "loadMore", "noRecordsFound", "onPageChange", "onRowClick", "onSearch", "parentClass", "recordsView", "recordsPerPage", "scopedFields", "search", "searchableFields", "searchBehavior", "searchBoxPlaceholder", "searchType", "stopDefaultSearch", "totalPages"],
   _excluded2 = ["title", "fieldName", "sortable"];
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
@@ -34,14 +34,22 @@ function ReactSmartTableComponent(_ref) {
     items = _ref.items,
     loading = _ref.loading,
     loadMore = _ref.loadMore,
+    noRecordsFound = _ref.noRecordsFound,
     onPageChange = _ref.onPageChange,
     onRowClick = _ref.onRowClick,
+    onSearch = _ref.onSearch,
     _ref$parentClass = _ref.parentClass,
     parentClass = _ref$parentClass === void 0 ? "scrollable-area" : _ref$parentClass,
     recordsView = _ref.recordsView,
     recordsPerPage = _ref.recordsPerPage,
     scopedFields = _ref.scopedFields,
     search = _ref.search,
+    searchableFields = _ref.searchableFields,
+    searchBehavior = _ref.searchBehavior,
+    _ref$searchBoxPlaceho = _ref.searchBoxPlaceholder,
+    searchBoxPlaceholder = _ref$searchBoxPlaceho === void 0 ? "Search..." : _ref$searchBoxPlaceho,
+    searchType = _ref.searchType,
+    stopDefaultSearch = _ref.stopDefaultSearch,
     totalPages = _ref.totalPages,
     props = _objectWithoutProperties(_ref, _excluded);
   var fields = headings.map(function (item) {
@@ -101,18 +109,39 @@ function ReactSmartTableComponent(_ref) {
     _React$useState4 = _slicedToArray(_React$useState3, 2),
     searchTerm = _React$useState4[0],
     setSearchTerm = _React$useState4[1];
+  var fuzzySearch = function fuzzySearch(needle, haystack) {
+    var hlen = haystack.length;
+    var nlen = needle.length;
+    if (nlen > hlen) {
+      return false;
+    }
+    if (nlen === hlen) {
+      return needle === haystack;
+    }
+    outer: for (var i = 0, j = 0; i < nlen; i++) {
+      var nch = needle.charCodeAt(i);
+      while (j < hlen) {
+        if (haystack.charCodeAt(j++) === nch) {
+          continue outer;
+        }
+      }
+      return false;
+    }
+    return true;
+  };
   var deepSearch = function deepSearch(obj, searchTerm) {
     if (_typeof(obj) === "object") {
       for (var key in obj) {
-        if (deepSearch(obj[key], searchTerm)) return true;
+        if (searchableFields !== null && searchableFields !== void 0 && searchableFields.includes(key) && deepSearch(obj[key], searchTerm)) return true;
       }
     } else if (typeof obj === "string" || typeof obj === "number") {
+      if (searchType === "fuzzy") return fuzzySearch(searchTerm.toLowerCase(), String(obj).toLowerCase());
       return String(obj).toLowerCase().includes(searchTerm.toLowerCase());
     }
     return false;
   };
   var filteredItems = React.useMemo(function () {
-    if (!searchTerm) return items;
+    if (!searchTerm || stopDefaultSearch) return items;
     return items.filter(function (item) {
       return deepSearch(item, searchTerm);
     });
@@ -155,9 +184,22 @@ function ReactSmartTableComponent(_ref) {
     className: "search-box",
     value: searchTerm,
     onChange: function onChange(e) {
-      return setSearchTerm(e.target.value);
+      var text = e.target.value;
+      setSearchTerm(text);
+      if (searchBehavior === "debounce") {
+        setTimeout(function () {
+          if (onSearch) onSearch(text);
+        }, 500);
+      } else if (searchBehavior === "throttle") {
+        clearTimeout(window.searchThrottleTimeout);
+        window.searchThrottleTimeout = setTimeout(function () {
+          if (onSearch) onSearch(text);
+        }, 500);
+      } else {
+        if (onSearch) onSearch(text);
+      }
     },
-    placeholder: "Search..."
+    placeholder: searchBoxPlaceholder
   }), /*#__PURE__*/React.createElement("div", {
     className: parentClass
   }, /*#__PURE__*/React.createElement("table", _extends({}, props, {
@@ -209,7 +251,14 @@ function ReactSmartTableComponent(_ref) {
     }));
   }) : loading ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     colSpan: fields.length
-  }, customLoader !== null && customLoader !== void 0 ? customLoader : "Loading...")) : null, recordsView === "infinite-Scroll" && !inverseScroll && items.length && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+  }, customLoader !== null && customLoader !== void 0 ? customLoader : "Loading...")) : /*#__PURE__*/React.createElement("tr", null, noRecordsFound ? typeof noRecordsFound === "string" ? /*#__PURE__*/React.createElement("td", {
+    colSpan: fields.length
+  }, noRecordsFound) : /*#__PURE__*/React.createElement("td", null, noRecordsFound) : /*#__PURE__*/React.createElement("td", {
+    colSpan: fields.length,
+    style: {
+      textAlign: "center"
+    }
+  }, "No record found")), recordsView === "infinite-Scroll" && !inverseScroll && items.length && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     colSpan: headings.length
   }, /*#__PURE__*/React.createElement("p", {
     style: {

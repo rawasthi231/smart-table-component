@@ -4,8 +4,9 @@
 
 An intelligent, dynamic React component, built entirely with TypeScript. This component is equipped with built-in features such as infinite scrolling, pagination, search and now includes the newly added sorting functionality. It provides a seamless user experience for data-intensive applications, allowing for efficient navigation and organization of data.
 
-
 [CodeSandbox](https://codesandbox.io/s/zen-hofstadter-7m2rnl)
+
+[Live Demo](https://rawasthi231.github.io/smart-table-component)
 
 ## Features
 
@@ -25,7 +26,115 @@ An intelligent, dynamic React component, built entirely with TypeScript. This co
 npm install --save react-smart-table-component
 ```
 
-##### Sample code for infinite scroll
+#### Basic usage:
+
+```jsx
+import React from "react";
+import SmartTable from "react-smart-table-component";
+
+export default function Users({ loading, data }) {
+  return (
+    <SmartTable
+      items={data}
+      headings={[
+        { fieldName: "name", title: "Name" },
+        { fieldName: "email", title: "Email" },
+        { fieldName: "phone", title: "Phone" },
+        { fieldName: "address", title: "Address" },
+        { fieldName: "company", title: "Company" },
+      ]}
+      loading={loading}
+      scopedFields={{
+        address: (item) => (
+          <td>{`${item.address.street}, ${item.address.city}, ${item.address.state}, ${item.address.zipcode}`}</td>
+        ),
+        company: (item) => (
+          <td>{`${item.company.name}, ${item.company.branch}`}</td>
+        ),
+      }}
+    />
+  );
+}
+```
+
+##### Sample code for Next.JS (TypeScript)
+
+```jsx
+import Head from "next/head";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+
+import { UserInfo } from "@/typings";
+
+const ReactSmartTableComponent = dynamic(
+  () => import("react-smart-table-component"),
+  {
+    ssr: false,
+    loading: () => <p>Loading...</p>,
+  }
+);
+
+export default function Users({ users }: { users: UserInfo[] }) {
+  return (
+    <>
+      <Head>
+        <title>Users List</title>
+        <meta name="description" content="Users Page" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <ReactSmartTableComponent
+        search
+        parentClass="container mt-5"
+        className="table table-responsive table-light table-striped"
+        items={users as UserInfo[]}
+        headings={[
+          { fieldName: "id", title: "#" },
+          { fieldName: "username", title: "Username", sortable: true },
+          { fieldName: "name", title: "Name", sortable: true },
+          { fieldName: "email", title: "Email", sortable: true },
+          { fieldName: "phone", title: "Phone", sortable: true },
+          { fieldName: "website", title: "Website", sortable: true },
+          {
+            fieldName: "address",
+            title: "Address",
+            colSpan: 3,
+          },
+        ]}
+        scopedFields={{
+          id: (item) => <td>{item.id}.</td>,
+          username: (item) => (
+            <td style={{ color: "#00aaff" }}>
+              <Link href={`/users/${item.id}`}>{item.username}</Link>
+            </td>
+          ),
+          address: (item) => (
+            <>
+              <td>{item.address.suite}</td>
+              <td>{item.address.street}</td>
+              <td>{`${item.address.city} ${item.address.zipcode}`}</td>
+            </>
+          ),
+        }}
+      />
+    </>
+  );
+}
+
+export async function getStaticProps() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const data = await response.json();
+  return {
+    props: {
+      users: data,
+    },
+  };
+}
+
+```
+
+##### Sample code for React.JS (Infinite Scroll)
 
 ```jsx
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -89,7 +198,6 @@ export default function App() {
 
   return (
     <ReactSmartTableComponent
-      items={products}
       headings={[
         { fieldName: "thumbnail", title: "Thumbnail" },
         { fieldName: "title", title: "Title" },
@@ -100,11 +208,13 @@ export default function App() {
         { fieldName: "description", title: "Description" },
         { fieldName: "action_1", title: "Action" },
       ]}
-      loading={loading}
+      search
       recordsView="infinite-Scroll"
       className="theme-table"
-      hasMoreRecords={hasMore}
+      items={products}
+      loading={loading}
       loadMore={loadMore}
+      hasMoreRecords={hasMore}
       scopedFields={{
         thumbnail: (item) => (
           <td>
@@ -135,89 +245,11 @@ export default function App() {
 }
 ```
 
-#### Basic usage:
-
-##### As class component
-
-```jsx
-import React, { Component } from "react";
-
-import SmartTable from "react-smart-table-component";
-
-export default class App extends Component {
-  state = { users: [], hasMore: true };
-
-  loadMore = () => {
-    this.setState({
-      users: this.state.users.concat([...moreData]),
-    });
-  };
-
-  render() {
-    return (
-      <SmartTable
-        items={this.state.users}
-        headings={[
-          { fieldName: "name", title: "Name" },
-          { fieldName: "email", title: "Email" },
-          { fieldName: "phone", title: "Phone" },
-          { fieldName: "address", title: "Address" },
-          { fieldName: "company", title: "Company" },
-        ]}
-        loading={loading}
-        scopedFields={{
-          address: (item) => <td>{`${item.address.street}`}</td>,
-          company: (item) => <td>{`${item.company.name}`}</td>,
-        }}
-        loadMore={this.loadMore}
-        hasMoreRecords={this.state.hasMore}
-      />
-    );
-  }
-}
-```
-
-##### As functional component with hooks
-
-```jsx
-import React, { useState } from "react";
-import SmartTable from "react-smart-table-component";
-export default function Users() {
-  const [users, setUsers] = useState([]);
-  const [hasMore, setHasMore] = useState(false);
-
-  const loadMore = () => {
-    setUsers([...users, ...moreData]);
-    setHasMore(true);
-  };
-
-  return (
-    <SmartTable
-      items={users}
-      headings={[
-        { fieldName: "name", title: "Name" },
-        { fieldName: "email", title: "Email" },
-        { fieldName: "phone", title: "Phone" },
-        { fieldName: "address", title: "Address" },
-        { fieldName: "company", title: "Company" },
-      ]}
-      loading={loading}
-      scopedFields={{
-        address: (item) => <td>{`${item.address.street}`}</td>,
-        company: (item) => <td>{`${item.company.name}`}</td>,
-      }}
-      loadMore={loadMore}
-      hasMoreRecords={hasMore}
-    />
-  );
-}
-```
-
 ## API
 
 <table>
   <tr>
-    <th>Name<br/></th>
+    <th>Name</th>
     <th>Type</th>
     <th>Required</th>
     <th>Default</th>
@@ -227,22 +259,22 @@ export default function Users() {
     <td>items</td>
     <td>array</td>
     <td>true</td>
-    <td>[]</td>
+    <td>Array</td>
     <td>Provide the data list which you wanna iterate through</td>
   </tr>
   <tr>
     <td>headings</td>
     <td>object</td>
     <td>true</td>
-    <td>Table heading info</td>
-    <td>The heads of the table rows</td>
+    <td>Array</td>
+    <td>The headings of the table</td>
   </tr>
   <tr>
     <td>scopedFields</td>
     <td>object</td>
     <td>false</td>
     <td>undefined</td>
-    <td>You can customize the info of a particular cell via using this prop</td>
+    <td>You can customize the layout of a particular cell via using this prop. Pass your custom cell body</td>
   </tr>
    <tr>
     <td>loading</td>
@@ -277,7 +309,7 @@ export default function Users() {
     <td>boolean</td>
     <td>false</td>
     <td>undefined</td>
-    <td>The default behaviour of infinite scroll is scroll to down but if you set this flag to true you can also use inverse scroll as well</td>
+    <td>The default behaviour of infinite scroll is scroll to down but if you pass this prop, inverse scroll will work upside down</td>
   </tr>
     <tr>
     <td>hasMoreRecords</td>
@@ -300,14 +332,14 @@ export default function Users() {
     <td>undefined</td>
     <td>Total number of pages</td>
   </tr>
-   <tr>
+  <tr>
     <td>currentPage</td>
     <td>number</td>
     <td>false</td>
     <td>undefined</td>
     <td>Current page value</td>
   </tr>
-   <tr>
+  <tr>
     <td>onPageChange</td>
     <td>function</td>
     <td>false</td>
@@ -315,19 +347,61 @@ export default function Users() {
     <td>It returns the clicked page number</td>
   </tr>
   </tr>
-   <tr>
+  <tr>
     <td>parentClass</td>
     <td>string</td>
     <td>false</td>
-    <td>"scrollable-area"</td>
-    <td>It's a default class with some basic styles required for infinite scroll feature</td>
+    <td>scrollable-area</td>
+    <td>You can pass a parent wrapper class for the table to customize the styles. scrollable-area is a default class with some basic styles required for infinite scroll feature such as height, overflow etc.</td>
   </tr>
   </tr>
-   <tr>
+  <tr>
     <td>search</td>
+    <td>boolean</td>
+    <td>works conditionally</td>
+    <td>undefined</td>
+    <td>To get a search box for searching functionality, (search and searchableFields both props are co-related to each other, if you pass one of these prop, you also need to pass the other)</td>
+  </tr>
+  <tr>
+    <td>searchableFields</td>
+    <td>Array</td>
+    <td>works conditionally</td>
+    <td>undefined</td>
+    <td>Pass the array of fields on which you want to perform the search (search and searchableFields both props are co-related to each other, if you pass one of these prop, you also need to pass the other)</td>
+  </tr>
+  <tr>
+    <td>searchBoxPlaceholder</td>
+    <td>string</td>
+    <td>false</td>
+    <td>undefined</td>
+    <td>Placeholder text for search box</td>
+  </tr>
+  <tr>
+    <td>stopDefaultSearch</td>
     <td>boolean</td>
     <td>false</td>
     <td>undefined</td>
-    <td>To get a search box for searching functionality</td>
+    <td>Use this prop if you don't want to use the default search logic and want to implement your own search logic</td>
+  </tr>
+  <tr>
+    <td>searchType</td>
+    <td>default | fuzzy</td>
+    <td>false</td>
+    <td>undefined</td>
+    <td>Search type </td>
+  </tr>
+  <tr>
+    <td>onSearch</td>
+    <td>(searchTerm: string) => void</td>
+    <td>works conditionally</td>
+    <td>undefined</td>
+    <td>Event handler for the change event of search box</td>
+  </tr>
+  <tr>
+    <td>searchBehavior</td>
+    <td>debounce | throttle</td>
+    <td>works conditionally</td>
+    <td>undefined</td>
+    <td>Search behavior: How onSearch will receive the input value</td>
   </tr>
 </table>

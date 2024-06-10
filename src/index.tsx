@@ -48,9 +48,9 @@ function App() {
     <SmartTable
       items={users}
       headings={[
-        { fieldName: "name", title: "Name" },
-        { fieldName: "email", title: "Email", sortable: true },
-        { fieldName: "phone", title: "Phone", sortable: true },
+        { fieldName: "name", title: "Name", sortable: true },
+        { fieldName: "email", title: "Email" },
+        { fieldName: "phone", title: "Phone" },
         { fieldName: "address", title: "Address" },
         { fieldName: "company", title: "Company" },
       ]}
@@ -62,6 +62,12 @@ function App() {
       className="theme-table"
       onRowClick={(item: User) => console.log(item)}
       search
+      searchableFields={["name", "company"]}
+      searchBoxPlaceholder="Search by name"
+      searchBehavior="throttle"
+      onSearch={(searchTerm: string) => console.log("searchTerm", searchTerm)}
+      searchType="fuzzy"
+      stopDefaultSearch
     />
   );
 }
