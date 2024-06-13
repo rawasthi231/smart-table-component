@@ -63,11 +63,8 @@ function App() {
       onRowClick={(item: User) => console.log(item)}
       search
       searchableFields={["name", "company"]}
-      searchBoxPlaceholder="Search by name"
+      searchBoxPlaceholder="Search name or company"
       searchBehavior="throttle"
-      onSearch={(searchTerm: string) => console.log("searchTerm", searchTerm)}
-      searchType="fuzzy"
-      stopDefaultSearch
     />
   );
 }

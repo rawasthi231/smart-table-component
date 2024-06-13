@@ -1,13 +1,16 @@
 {
   "name": "react-smart-table-component",
-  "version": "1.2.0",
-  "description": "An intelligent, dynamic React component, built entirely with TypeScript. This component is equipped with built-in features such as infinite scrolling, pagination, search and now includes the newly added sorting functionality. It provides a seamless user experience for data-intensive applications, allowing for efficient navigation and organization of data.",
+  "version": "1.2.1",
+  "author": "Raghvendra Awasthi <awasthiraghav59@gmail.com>",
+  "license": "MIT",
+  "description": "An intelligent, dynamic React component, built entirely with TypeScript. This component is equipped with built-in features such as infinite scrolling, pagination, sorting and now includes the newly added search functionality. It provides a seamless user experience for data-intensive applications, allowing for efficient navigation and organization of data.",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "files": [
     "dist",
     "typings",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "dev": "concurrently \"npm run build:watch\" \"npm run demo:dev\"",
@@ -19,8 +22,6 @@
     "predeploy": "npm run demo:prod",
     "deploy": "gh-pages -d demo"
   },
-  "author": "Raghvendra Awasthi <awasthiraghav59@gmail.com>",
-  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/rawasthi231/smart-table-component.git"

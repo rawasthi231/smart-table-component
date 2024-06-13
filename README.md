@@ -404,4 +404,11 @@ export default function App() {
     <td>undefined</td>
     <td>Search behavior: How onSearch will receive the input value</td>
   </tr>
+  <tr>
+    <td>noRecordsFound</td>
+    <td>React.ReactNode | string</td>
+    <td>false</td>
+    <td>No record found</td>
+    <td>Default text for empty data set is passed table items</td>
+  </tr>
 </table>
