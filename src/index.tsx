@@ -65,6 +65,7 @@ function App() {
       searchableFields={["name", "company"]}
       searchBoxPlaceholder="Search name or company"
       searchBehavior="throttle"
+      showNumbering
     />
   );
 }

@@ -411,4 +411,11 @@ export default function App() {
     <td>No record found</td>
     <td>Default text for empty data set is passed table items</td>
   </tr>
+  <tr>
+    <td>showNumbering</td>
+    <td>boolean</td>
+    <td>false</td>
+    <td>false</td>
+    <td>Gives a default numbering for the table records</td>
+  </tr>
 </table>

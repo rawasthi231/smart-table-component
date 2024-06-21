@@ -60,6 +60,7 @@ export interface SmartTableProps<T>
   parentClass?: string;
   recordsPerPage?: number;
   scopedFields?: ScopedFields<T>;
+  showNumbering?: boolean;
   totalPages?: number;
 }
 

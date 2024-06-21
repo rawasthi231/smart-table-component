@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = exports.ReactSmartTable = void 0;
 var React = _interopRequireWildcard(require("react"));
-var _excluded = ["currentPage", "customLoader", "hasMoreRecords", "headings", "inverseScroll", "items", "loading", "loadMore", "noRecordsFound", "onPageChange", "onRowClick", "onSearch", "parentClass", "recordsView", "recordsPerPage", "scopedFields", "search", "searchableFields", "searchBehavior", "searchBoxPlaceholder", "searchType", "stopDefaultSearch", "totalPages"],
+var _excluded = ["currentPage", "customLoader", "hasMoreRecords", "headings", "inverseScroll", "items", "loading", "loadMore", "noRecordsFound", "onPageChange", "onRowClick", "onSearch", "parentClass", "recordsView", "recordsPerPage", "scopedFields", "search", "searchableFields", "searchBehavior", "searchBoxPlaceholder", "searchType", "showNumbering", "stopDefaultSearch", "totalPages"],
   _excluded2 = ["title", "fieldName", "sortable"];
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
@@ -49,6 +49,7 @@ function ReactSmartTableComponent(_ref) {
     _ref$searchBoxPlaceho = _ref.searchBoxPlaceholder,
     searchBoxPlaceholder = _ref$searchBoxPlaceho === void 0 ? "Search..." : _ref$searchBoxPlaceho,
     searchType = _ref.searchType,
+    showNumbering = _ref.showNumbering,
     stopDefaultSearch = _ref.stopDefaultSearch,
     totalPages = _ref.totalPages,
     props = _objectWithoutProperties(_ref, _excluded);
@@ -208,7 +209,9 @@ function ReactSmartTableComponent(_ref) {
     role: "rowgroup"
   }, /*#__PURE__*/React.createElement("tr", {
     role: "row"
-  }, headings.map(function (_ref4, i) {
+  }, showNumbering ? /*#__PURE__*/React.createElement("th", {
+    role: "columnheader"
+  }, "#") : null, headings.map(function (_ref4, i) {
     var title = _ref4.title,
       fieldName = _ref4.fieldName,
       sortable = _ref4.sortable,
@@ -217,8 +220,12 @@ function ReactSmartTableComponent(_ref) {
       role: "columnheader",
       key: i
     }, restAttr, {
+      style: {
+        cursor: sortable && !fieldName.startsWith("action_") ? "pointer" : "default"
+      },
+      title: sortable && !fieldName.startsWith("action_") ? "Click to sort" : undefined,
       onClick: function onClick() {
-        return sortable && !fieldName.startsWith("action_1") && handleSort(fieldName);
+        return sortable && !fieldName.startsWith("action_") && handleSort(fieldName);
       }
     }), title !== null && title !== void 0 ? title : fieldName, " ", sortable && sortField === fieldName && /*#__PURE__*/React.createElement("span", null, sortDirection === "asc" ? "▲" : "▼"));
   }))) : null, /*#__PURE__*/React.createElement("tbody", {
@@ -241,7 +248,7 @@ function ReactSmartTableComponent(_ref) {
         return onRowClick && onRowClick(item);
       },
       className: onRowClick ? "cursor-pointer" : ""
-    }, fields.map(function (field, fieldKey) {
+    }, showNumbering ? /*#__PURE__*/React.createElement("td", null, itemKey + 1) : null, fields.map(function (field, fieldKey) {
       var _scopedFields$field;
       return scopedFields && scopedFields[field] ? /*#__PURE__*/React.createElement(React.Fragment, {
         key: fieldKey

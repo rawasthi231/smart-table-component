@@ -24,6 +24,7 @@ function ReactSmartTableComponent<T>({
   searchBehavior,
   searchBoxPlaceholder = "Search...",
   searchType,
+  showNumbering,
   stopDefaultSearch,
   totalPages,
   ...props
@@ -197,15 +198,27 @@ function ReactSmartTableComponent<T>({
           {headings && headings.length ? (
             <thead role="rowgroup">
               <tr role="row">
+                {showNumbering ? <th role="columnheader">#</th> : null}
                 {headings.map(
                   ({ title, fieldName, sortable, ...restAttr }, i) => (
                     <th
                       role="columnheader"
                       key={i}
                       {...restAttr}
+                      style={{
+                        cursor:
+                          sortable && !fieldName.startsWith("action_")
+                            ? "pointer"
+                            : "default",
+                      }}
+                      title={
+                        sortable && !fieldName.startsWith("action_")
+                          ? "Click to sort"
+                          : undefined
+                      }
                       onClick={() =>
                         sortable &&
-                        !fieldName.startsWith("action_1") &&
+                        !fieldName.startsWith("action_") &&
                         handleSort(fieldName as Extract<keyof T, string>)
                       }
                     >
@@ -244,6 +257,7 @@ function ReactSmartTableComponent<T>({
                   onClick={() => onRowClick && onRowClick(item)}
                   className={onRowClick ? "cursor-pointer" : ""}
                 >
+                  {showNumbering ? <td>{itemKey + 1}</td> : null}
                   {fields.map((field: Heading<T>["fieldName"], fieldKey) =>
                     scopedFields && scopedFields[field] ? (
                       <React.Fragment key={fieldKey}>
