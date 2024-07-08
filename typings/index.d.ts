@@ -62,6 +62,7 @@ export interface SmartTableProps<T>
   scopedFields?: ScopedFields<T>;
   showNumbering?: boolean;
   totalPages?: number;
+  hideHeadings?: boolean;
 }
 
 export type ReactSmartTableComponentProps<T> = SmartTableProps<T> &

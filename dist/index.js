@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = exports.ReactSmartTable = void 0;
 var React = _interopRequireWildcard(require("react"));
-var _excluded = ["currentPage", "customLoader", "hasMoreRecords", "headings", "inverseScroll", "items", "loading", "loadMore", "noRecordsFound", "onPageChange", "onRowClick", "onSearch", "parentClass", "recordsView", "recordsPerPage", "scopedFields", "search", "searchableFields", "searchBehavior", "searchBoxPlaceholder", "searchType", "showNumbering", "stopDefaultSearch", "totalPages"],
+var _excluded = ["currentPage", "customLoader", "hasMoreRecords", "headings", "hideHeadings", "inverseScroll", "items", "loading", "loadMore", "noRecordsFound", "onPageChange", "onRowClick", "onSearch", "parentClass", "recordsView", "recordsPerPage", "scopedFields", "search", "searchableFields", "searchBehavior", "searchBoxPlaceholder", "searchType", "showNumbering", "stopDefaultSearch", "totalPages"],
   _excluded2 = ["title", "fieldName", "sortable"];
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
@@ -30,6 +30,7 @@ function ReactSmartTableComponent(_ref) {
     _ref$hasMoreRecords = _ref.hasMoreRecords,
     hasMoreRecords = _ref$hasMoreRecords === void 0 ? false : _ref$hasMoreRecords,
     headings = _ref.headings,
+    hideHeadings = _ref.hideHeadings,
     inverseScroll = _ref.inverseScroll,
     items = _ref.items,
     loading = _ref.loading,
@@ -230,7 +231,7 @@ function ReactSmartTableComponent(_ref) {
     }), title !== null && title !== void 0 ? title : fieldName, " ", sortable && sortField === fieldName && /*#__PURE__*/React.createElement("span", null, sortDirection === "asc" ? "▲" : "▼"));
   }))) : null, /*#__PURE__*/React.createElement("tbody", {
     role: "rowgroup"
-  }, recordsView === "infinite-Scroll" && inverseScroll && items.length && /*#__PURE__*/React.createElement("tr", {
+  }, recordsView === "infinite-Scroll" && inverseScroll && loading && items.length ? /*#__PURE__*/React.createElement("tr", {
     role: "row"
   }, /*#__PURE__*/React.createElement("td", {
     role: "cell",
@@ -241,7 +242,7 @@ function ReactSmartTableComponent(_ref) {
       textAlign: "center"
     },
     ref: setElement
-  }, customLoader !== null && customLoader !== void 0 ? customLoader : "Loading..."))), sortedItems && sortedItems.length ? sortedItems.map(function (item, itemKey) {
+  }, customLoader !== null && customLoader !== void 0 ? customLoader : "Loading..."))) : null, sortedItems && sortedItems.length ? sortedItems.map(function (item, itemKey) {
     return /*#__PURE__*/React.createElement("tr", {
       key: itemKey,
       onClick: function onClick() {
@@ -265,7 +266,7 @@ function ReactSmartTableComponent(_ref) {
     style: {
       textAlign: "center"
     }
-  }, "No record found")), recordsView === "infinite-Scroll" && !inverseScroll && items.length && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+  }, "No record found")), recordsView === "infinite-Scroll" && !inverseScroll && loading && items.length ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     colSpan: headings.length
   }, /*#__PURE__*/React.createElement("p", {
     style: {
@@ -273,11 +274,11 @@ function ReactSmartTableComponent(_ref) {
       textAlign: "center"
     },
     ref: setElement
-  }, customLoader !== null && customLoader !== void 0 ? customLoader : "Loading...")))))), /*#__PURE__*/React.createElement("div", {
+  }, customLoader !== null && customLoader !== void 0 ? customLoader : "Loading..."))) : null))), /*#__PURE__*/React.createElement("div", {
     className: "page-bar"
   }, totalPages && currentPage ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("span", {
     onClick: function onClick() {
-      return onPageChange && onPageChange(1);
+      if (onPageChange) onPageChange(1);
     }
   }, "<<"), (_Array$fill = new Array(totalPages).fill(1)) === null || _Array$fill === void 0 ? void 0 : _Array$fill.map(function () {
     for (var _len = arguments.length, _ref5 = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -288,21 +289,21 @@ function ReactSmartTableComponent(_ref) {
       key: i
     }, i === 0 ? /*#__PURE__*/React.createElement("span", {
       onClick: function onClick() {
-        return onPageChange && onPageChange(currentPage === 1 ? currentPage : currentPage - 1);
+        if (onPageChange) onPageChange(currentPage === 1 ? currentPage : currentPage - 1);
       }
     }, "<") : null, /*#__PURE__*/React.createElement("span", {
       className: currentPage === i + 1 ? "actve-page" : "",
       onClick: function onClick() {
-        return onPageChange && onPageChange(i + 1);
+        if (onPageChange) onPageChange(i + 1);
       }
     }, i + 1), i === totalPages - 1 ? /*#__PURE__*/React.createElement("span", {
       onClick: function onClick() {
-        return onPageChange && onPageChange(currentPage < totalPages ? currentPage + 1 : totalPages);
+        if (onPageChange) onPageChange(currentPage < totalPages ? currentPage + 1 : totalPages);
       }
     }, ">") : null);
   }), /*#__PURE__*/React.createElement("span", {
     onClick: function onClick() {
-      return onPageChange && onPageChange(totalPages);
+      if (onPageChange) onPageChange(totalPages);
     }
   }, ">>")) : null));
 }

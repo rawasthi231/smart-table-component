@@ -7,6 +7,7 @@ function ReactSmartTableComponent<T>({
   customLoader,
   hasMoreRecords = false,
   headings,
+  hideHeadings,
   inverseScroll,
   items,
   loading,
@@ -235,21 +236,22 @@ function ReactSmartTableComponent<T>({
 
           <tbody role="rowgroup">
             {recordsView === "infinite-Scroll" &&
-              inverseScroll &&
-              items.length && (
-                <tr role="row">
-                  <td role="cell" colSpan={headings.length}>
-                    <p
-                      style={{ color: "black", textAlign: "center" }}
-                      ref={
-                        setElement as unknown as React.LegacyRef<HTMLParagraphElement>
-                      }
-                    >
-                      {customLoader ?? "Loading..."}
-                    </p>
-                  </td>
-                </tr>
-              )}
+            inverseScroll &&
+            loading &&
+            items.length ? (
+              <tr role="row">
+                <td role="cell" colSpan={headings.length}>
+                  <p
+                    style={{ color: "black", textAlign: "center" }}
+                    ref={
+                      setElement as unknown as React.LegacyRef<HTMLParagraphElement>
+                    }
+                  >
+                    {customLoader ?? "Loading..."}
+                  </p>
+                </td>
+              </tr>
+            ) : null}
             {sortedItems && sortedItems.length ? (
               sortedItems.map((item, itemKey) => (
                 <tr
@@ -289,38 +291,45 @@ function ReactSmartTableComponent<T>({
               </tr>
             )}
             {recordsView === "infinite-Scroll" &&
-              !inverseScroll &&
-              items.length && (
-                <tr>
-                  <td colSpan={headings.length}>
-                    <p
-                      style={{ color: "black", textAlign: "center" }}
-                      ref={
-                        setElement as unknown as React.LegacyRef<HTMLParagraphElement>
-                      }
-                    >
-                      {customLoader ?? "Loading..."}
-                    </p>
-                  </td>
-                </tr>
-              )}
+            !inverseScroll &&
+            loading &&
+            items.length ? (
+              <tr>
+                <td colSpan={headings.length}>
+                  <p
+                    style={{ color: "black", textAlign: "center" }}
+                    ref={
+                      setElement as unknown as React.LegacyRef<HTMLParagraphElement>
+                    }
+                  >
+                    {customLoader ?? "Loading..."}
+                  </p>
+                </td>
+              </tr>
+            ) : null}
           </tbody>
         </table>
       </div>
       <div className="page-bar">
         {totalPages && currentPage ? (
           <>
-            <span onClick={() => onPageChange && onPageChange(1)}>{"<<"}</span>
+            <span
+              onClick={() => {
+                if (onPageChange) onPageChange(1);
+              }}
+            >
+              {"<<"}
+            </span>
             {new Array(totalPages).fill(1)?.map((...[, i]) => (
               <React.Fragment key={i}>
                 {i === 0 ? (
                   <span
-                    onClick={() =>
-                      onPageChange &&
-                      onPageChange(
-                        currentPage === 1 ? currentPage : currentPage - 1
-                      )
-                    }
+                    onClick={() => {
+                      if (onPageChange)
+                        onPageChange(
+                          currentPage === 1 ? currentPage : currentPage - 1
+                        );
+                    }}
                   >
                     {"<"}
                   </span>
@@ -328,26 +337,34 @@ function ReactSmartTableComponent<T>({
 
                 <span
                   className={currentPage === i + 1 ? "actve-page" : ""}
-                  onClick={() => onPageChange && onPageChange(i + 1)}
+                  onClick={() => {
+                    if (onPageChange) onPageChange(i + 1);
+                  }}
                 >
                   {i + 1}
                 </span>
 
                 {i === totalPages - 1 ? (
                   <span
-                    onClick={() =>
-                      onPageChange &&
-                      onPageChange(
-                        currentPage < totalPages ? currentPage + 1 : totalPages
-                      )
-                    }
+                    onClick={() => {
+                      if (onPageChange)
+                        onPageChange(
+                          currentPage < totalPages
+                            ? currentPage + 1
+                            : totalPages
+                        );
+                    }}
                   >
                     {">"}
                   </span>
                 ) : null}
               </React.Fragment>
             ))}
-            <span onClick={() => onPageChange && onPageChange(totalPages)}>
+            <span
+              onClick={() => {
+                if (onPageChange) onPageChange(totalPages);
+              }}
+            >
               {">>"}
             </span>
           </>

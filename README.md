@@ -30,11 +30,11 @@ npm install --save react-smart-table-component
 
 ```jsx
 import React from "react";
-import SmartTable from "react-smart-table-component";
+import ReactSmartTableComponent from "react-smart-table-component";
 
 export default function Users({ loading, data }) {
   return (
-    <SmartTable
+    <ReactSmartTableComponent
       items={data}
       headings={[
         { fieldName: "name", title: "Name" },
@@ -417,5 +417,12 @@ export default function App() {
     <td>false</td>
     <td>false</td>
     <td>Gives a default numbering for the table records</td>
+  </tr>
+  <tr>
+    <td>hideHeadings</td>
+    <td>boolean</td>
+    <td>false</td>
+    <td>false</td>
+    <td>Option to hide headings, if you don't want to show headings</td>
   </tr>
 </table>
