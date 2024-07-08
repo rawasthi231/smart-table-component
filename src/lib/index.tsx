@@ -290,7 +290,7 @@ function ReactSmartTableComponent<T>({
                 )}
               </tr>
             )}
-            {!hasMoreRecords ? (
+            {!loading && !hasMoreRecords && items.length ? (
               <tr>
                 <td colSpan={headings.length}>
                   <p style={{ color: "black", textAlign: "center" }}>

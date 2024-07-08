@@ -266,7 +266,7 @@ function ReactSmartTableComponent(_ref) {
     style: {
       textAlign: "center"
     }
-  }, "No record found")), !hasMoreRecords ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+  }, "No record found")), !loading && !hasMoreRecords && items.length ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     colSpan: headings.length
   }, /*#__PURE__*/React.createElement("p", {
     style: {
