@@ -231,7 +231,7 @@ function ReactSmartTableComponent(_ref) {
     }), title !== null && title !== void 0 ? title : fieldName, " ", sortable && sortField === fieldName && /*#__PURE__*/React.createElement("span", null, sortDirection === "asc" ? "▲" : "▼"));
   }))) : null, /*#__PURE__*/React.createElement("tbody", {
     role: "rowgroup"
-  }, recordsView === "infinite-Scroll" && inverseScroll && loading && items.length ? /*#__PURE__*/React.createElement("tr", {
+  }, recordsView === "infinite-Scroll" && inverseScroll && hasMoreRecords && items.length ? /*#__PURE__*/React.createElement("tr", {
     role: "row"
   }, /*#__PURE__*/React.createElement("td", {
     role: "cell",
@@ -266,7 +266,14 @@ function ReactSmartTableComponent(_ref) {
     style: {
       textAlign: "center"
     }
-  }, "No record found")), recordsView === "infinite-Scroll" && !inverseScroll && loading && items.length ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+  }, "No record found")), !hasMoreRecords ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: headings.length
+  }, /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: "black",
+      textAlign: "center"
+    }
+  }, "You are all caught up!"))) : null, recordsView === "infinite-Scroll" && !inverseScroll && hasMoreRecords && items.length ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     colSpan: headings.length
   }, /*#__PURE__*/React.createElement("p", {
     style: {

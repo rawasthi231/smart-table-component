@@ -237,7 +237,7 @@ function ReactSmartTableComponent<T>({
           <tbody role="rowgroup">
             {recordsView === "infinite-Scroll" &&
             inverseScroll &&
-            loading &&
+            hasMoreRecords &&
             items.length ? (
               <tr role="row">
                 <td role="cell" colSpan={headings.length}>
@@ -290,9 +290,18 @@ function ReactSmartTableComponent<T>({
                 )}
               </tr>
             )}
+            {!hasMoreRecords ? (
+              <tr>
+                <td colSpan={headings.length}>
+                  <p style={{ color: "black", textAlign: "center" }}>
+                    You are all caught up!
+                  </p>
+                </td>
+              </tr>
+            ) : null}
             {recordsView === "infinite-Scroll" &&
             !inverseScroll &&
-            loading &&
+            hasMoreRecords &&
             items.length ? (
               <tr>
                 <td colSpan={headings.length}>
