@@ -425,4 +425,25 @@ export default function App() {
     <td>false</td>
     <td>Option to hide headings, if you don't want to show headings</td>
   </tr>
+  <tr>
+    <td>showNoMoreRecordsText</td>
+    <td>boolean</td>
+    <td>false</td>
+    <td>undefined</td>
+    <td>You can hide/show the default text for no more records available text in case of using infinite scroll</td>
+  </tr>
+  <tr>
+    <td>noMoreRecordsText</td>
+    <td>string</td>
+    <td>false</td>
+    <td>You are all caught up!</td>
+    <td>You can pass custom text for no more records available text in case of using infinite scroll</td>
+  </tr>
+  <tr>
+    <td>rowClassName</td>
+    <td>function</td>
+    <td>false</td>
+    <td>undefined</td>
+    <td>If you want to add custom css class on specific rows based on some conditions, you should use this prop.</td>
+  </tr>
 </table>

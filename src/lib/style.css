@@ -153,3 +153,7 @@
 .theme-table tbody tr:last-child td:last-child {
   border-bottom-right-radius: 10px;
 }
+
+.faded {
+  opacity: 0.5;
+}

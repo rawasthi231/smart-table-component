@@ -13,12 +13,14 @@ function ReactSmartTableComponent<T>({
   loading,
   loadMore,
   noRecordsFound,
+  noMoreRecordsText,
   onPageChange,
   onRowClick,
   onSearch,
   parentClass = "scrollable-area",
   recordsView,
   recordsPerPage,
+  rowClassName,
   scopedFields,
   search,
   searchableFields,
@@ -27,6 +29,7 @@ function ReactSmartTableComponent<T>({
   searchType,
   showNumbering,
   stopDefaultSearch,
+  showNoMoreRecordsText,
   totalPages,
   ...props
 }: ReactSmartTableComponentProps<T>) {
@@ -237,12 +240,29 @@ function ReactSmartTableComponent<T>({
           <tbody role="rowgroup">
             {recordsView === "infinite-Scroll" &&
             inverseScroll &&
+            !loading &&
+            !hasMoreRecords &&
+            items.length &&
+            showNoMoreRecordsText ? (
+              <tr>
+                <td colSpan={headings.length}>
+                  <p style={{ color: "black", textAlign: "center" }}>
+                    {noMoreRecordsText ?? "You are all caught up!"}
+                  </p>
+                </td>
+              </tr>
+            ) : null}
+            {recordsView === "infinite-Scroll" &&
+            inverseScroll &&
             hasMoreRecords &&
             items.length ? (
               <tr role="row">
-                <td role="cell" colSpan={headings.length}>
+                <td
+                  role="cell"
+                  colSpan={headings.length}
+                  style={{ color: "black", textAlign: "center" }}
+                >
                   <p
-                    style={{ color: "black", textAlign: "center" }}
                     ref={
                       setElement as unknown as React.LegacyRef<HTMLParagraphElement>
                     }
@@ -257,7 +277,9 @@ function ReactSmartTableComponent<T>({
                 <tr
                   key={itemKey}
                   onClick={() => onRowClick && onRowClick(item)}
-                  className={onRowClick ? "cursor-pointer" : ""}
+                  className={`${onRowClick ? "cursor-pointer" : ""} ${
+                    rowClassName ? rowClassName(item) : ""
+                  }`}
                 >
                   {showNumbering ? <td>{itemKey + 1}</td> : null}
                   {fields.map((field: Heading<T>["fieldName"], fieldKey) =>
@@ -290,11 +312,16 @@ function ReactSmartTableComponent<T>({
                 )}
               </tr>
             )}
-            {!loading && !hasMoreRecords && items.length ? (
+            {recordsView === "infinite-Scroll" &&
+            !inverseScroll &&
+            !loading &&
+            !hasMoreRecords &&
+            items.length &&
+            showNoMoreRecordsText ? (
               <tr>
                 <td colSpan={headings.length}>
                   <p style={{ color: "black", textAlign: "center" }}>
-                    You are all caught up!
+                    {noMoreRecordsText ?? "You are all caught up!"}
                   </p>
                 </td>
               </tr>
@@ -304,9 +331,11 @@ function ReactSmartTableComponent<T>({
             hasMoreRecords &&
             items.length ? (
               <tr>
-                <td colSpan={headings.length}>
+                <td
+                  colSpan={headings.length}
+                  style={{ color: "black", textAlign: "center" }}
+                >
                   <p
-                    style={{ color: "black", textAlign: "center" }}
                     ref={
                       setElement as unknown as React.LegacyRef<HTMLParagraphElement>
                     }

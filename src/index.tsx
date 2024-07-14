@@ -66,6 +66,7 @@ function App() {
       searchBoxPlaceholder="Search name or company"
       searchBehavior="throttle"
       showNumbering
+      rowClassName={(item: User) => (item.id === 2  ? "faded" : "")}
     />
   );
 }

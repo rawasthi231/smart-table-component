@@ -1,6 +1,6 @@
 {
   "name": "react-smart-table-component",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "author": "Raghvendra Awasthi <awasthiraghav59@gmail.com>",
   "license": "MIT",
   "description": "An intelligent, dynamic React component, built entirely with TypeScript. This component is equipped with built-in features such as infinite scrolling, pagination, sorting and now includes the newly added search functionality. It provides a seamless user experience for data-intensive applications, allowing for efficient navigation and organization of data.",
@@ -54,6 +54,7 @@
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "babel-loader": "^9.1.2",
+    "concurrently": "^8.2.2",
     "css-loader": "^6.7.3",
     "gh-pages": "^5.0.0",
     "html-webpack-plugin": "^5.5.0",

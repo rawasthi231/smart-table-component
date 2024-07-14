@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = exports.ReactSmartTable = void 0;
 var React = _interopRequireWildcard(require("react"));
-var _excluded = ["currentPage", "customLoader", "hasMoreRecords", "headings", "hideHeadings", "inverseScroll", "items", "loading", "loadMore", "noRecordsFound", "onPageChange", "onRowClick", "onSearch", "parentClass", "recordsView", "recordsPerPage", "scopedFields", "search", "searchableFields", "searchBehavior", "searchBoxPlaceholder", "searchType", "showNumbering", "stopDefaultSearch", "totalPages"],
+var _excluded = ["currentPage", "customLoader", "hasMoreRecords", "headings", "hideHeadings", "inverseScroll", "items", "loading", "loadMore", "noRecordsFound", "noMoreRecordsText", "onPageChange", "onRowClick", "onSearch", "parentClass", "recordsView", "recordsPerPage", "rowClassName", "scopedFields", "search", "searchableFields", "searchBehavior", "searchBoxPlaceholder", "searchType", "showNumbering", "stopDefaultSearch", "showNoMoreRecordsText", "totalPages"],
   _excluded2 = ["title", "fieldName", "sortable"];
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n["default"] = e, t && t.set(e, n), n; }
@@ -36,6 +36,7 @@ function ReactSmartTableComponent(_ref) {
     loading = _ref.loading,
     loadMore = _ref.loadMore,
     noRecordsFound = _ref.noRecordsFound,
+    noMoreRecordsText = _ref.noMoreRecordsText,
     onPageChange = _ref.onPageChange,
     onRowClick = _ref.onRowClick,
     onSearch = _ref.onSearch,
@@ -43,6 +44,7 @@ function ReactSmartTableComponent(_ref) {
     parentClass = _ref$parentClass === void 0 ? "scrollable-area" : _ref$parentClass,
     recordsView = _ref.recordsView,
     recordsPerPage = _ref.recordsPerPage,
+    rowClassName = _ref.rowClassName,
     scopedFields = _ref.scopedFields,
     search = _ref.search,
     searchableFields = _ref.searchableFields,
@@ -52,6 +54,7 @@ function ReactSmartTableComponent(_ref) {
     searchType = _ref.searchType,
     showNumbering = _ref.showNumbering,
     stopDefaultSearch = _ref.stopDefaultSearch,
+    showNoMoreRecordsText = _ref.showNoMoreRecordsText,
     totalPages = _ref.totalPages,
     props = _objectWithoutProperties(_ref, _excluded);
   var fields = headings.map(function (item) {
@@ -231,16 +234,23 @@ function ReactSmartTableComponent(_ref) {
     }), title !== null && title !== void 0 ? title : fieldName, " ", sortable && sortField === fieldName && /*#__PURE__*/React.createElement("span", null, sortDirection === "asc" ? "▲" : "▼"));
   }))) : null, /*#__PURE__*/React.createElement("tbody", {
     role: "rowgroup"
-  }, recordsView === "infinite-Scroll" && inverseScroll && hasMoreRecords && items.length ? /*#__PURE__*/React.createElement("tr", {
-    role: "row"
-  }, /*#__PURE__*/React.createElement("td", {
-    role: "cell",
+  }, recordsView === "infinite-Scroll" && inverseScroll && !loading && !hasMoreRecords && items.length && showNoMoreRecordsText ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     colSpan: headings.length
   }, /*#__PURE__*/React.createElement("p", {
     style: {
       color: "black",
       textAlign: "center"
-    },
+    }
+  }, noMoreRecordsText !== null && noMoreRecordsText !== void 0 ? noMoreRecordsText : "You are all caught up!"))) : null, recordsView === "infinite-Scroll" && inverseScroll && hasMoreRecords && items.length ? /*#__PURE__*/React.createElement("tr", {
+    role: "row"
+  }, /*#__PURE__*/React.createElement("td", {
+    role: "cell",
+    colSpan: headings.length,
+    style: {
+      color: "black",
+      textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("p", {
     ref: setElement
   }, customLoader !== null && customLoader !== void 0 ? customLoader : "Loading..."))) : null, sortedItems && sortedItems.length ? sortedItems.map(function (item, itemKey) {
     return /*#__PURE__*/React.createElement("tr", {
@@ -248,7 +258,7 @@ function ReactSmartTableComponent(_ref) {
       onClick: function onClick() {
         return onRowClick && onRowClick(item);
       },
-      className: onRowClick ? "cursor-pointer" : ""
+      className: "".concat(onRowClick ? "cursor-pointer" : "", " ").concat(rowClassName ? rowClassName(item) : "")
     }, showNumbering ? /*#__PURE__*/React.createElement("td", null, itemKey + 1) : null, fields.map(function (field, fieldKey) {
       var _scopedFields$field;
       return scopedFields && scopedFields[field] ? /*#__PURE__*/React.createElement(React.Fragment, {
@@ -266,20 +276,20 @@ function ReactSmartTableComponent(_ref) {
     style: {
       textAlign: "center"
     }
-  }, "No record found")), !loading && !hasMoreRecords && items.length ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+  }, "No record found")), recordsView === "infinite-Scroll" && !inverseScroll && !loading && !hasMoreRecords && items.length && showNoMoreRecordsText ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     colSpan: headings.length
   }, /*#__PURE__*/React.createElement("p", {
     style: {
       color: "black",
       textAlign: "center"
     }
-  }, "You are all caught up!"))) : null, recordsView === "infinite-Scroll" && !inverseScroll && hasMoreRecords && items.length ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
-    colSpan: headings.length
-  }, /*#__PURE__*/React.createElement("p", {
+  }, noMoreRecordsText !== null && noMoreRecordsText !== void 0 ? noMoreRecordsText : "You are all caught up!"))) : null, recordsView === "infinite-Scroll" && !inverseScroll && hasMoreRecords && items.length ? /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: headings.length,
     style: {
       color: "black",
       textAlign: "center"
-    },
+    }
+  }, /*#__PURE__*/React.createElement("p", {
     ref: setElement
   }, customLoader !== null && customLoader !== void 0 ? customLoader : "Loading..."))) : null))), /*#__PURE__*/React.createElement("div", {
     className: "page-bar"
