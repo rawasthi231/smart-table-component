@@ -49,7 +49,8 @@ function ReactSmartTableComponent<T>({
           entry.isIntersecting &&
           entry.intersectionRatio &&
           hasMoreRecordsRef.current &&
-          loadMore
+          loadMore &&
+          !loading
         ) {
           loadMore();
         }

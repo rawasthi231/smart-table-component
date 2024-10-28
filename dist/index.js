@@ -72,7 +72,7 @@ function ReactSmartTableComponent(_ref) {
   var scrollObserver = React.useRef(new IntersectionObserver(function (_ref2) {
     var _ref3 = _slicedToArray(_ref2, 1),
       entry = _ref3[0];
-    if (entry.isIntersecting && entry.intersectionRatio && hasMoreRecordsRef.current && loadMore) {
+    if (entry.isIntersecting && entry.intersectionRatio && hasMoreRecordsRef.current && loadMore && !loading) {
       loadMore();
     }
   }, {
